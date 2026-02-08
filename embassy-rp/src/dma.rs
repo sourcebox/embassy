@@ -29,8 +29,8 @@ impl<T: ChannelInstance> interrupt::typelevel::Handler<T::Interrupt> for Interru
 
         let ints0 = pac::DMA.ints(0).read();
         if ints0 & (1 << channel) != 0 {
-            CHANNEL_WAKERS[channel].wake();
             pac::DMA.ints(0).write_value(1 << channel);
+            CHANNEL_WAKERS[channel].wake();
         }
     }
 }
