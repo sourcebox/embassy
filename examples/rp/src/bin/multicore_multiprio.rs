@@ -8,7 +8,7 @@ use embassy_executor::Spawner;
 use embassy_rp::multicore::{CoreId, Stack, current_core, spawn_core1};
 use embassy_rp::{bind_interrupts, interrupt};
 use embassy_rp::interrupt::{InterruptExt, Priority};
-use embassy_rp::executor::{Executor, InterruptExecutor};
+use embassy_rp::executor::{Executor, InterruptExecutor, main};
 use embassy_rp::peripherals::USB;
 use embassy_time::{Duration, Ticker, Timer};
 use embassy_rp::usb;
@@ -36,7 +36,7 @@ bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => usb::InterruptHandler<USB>;
 });
 
-#[embassy_rp::executor::main(executor="embassy_rp::executor::Executor")]
+#[main(executor="Executor")]
 async fn main(spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
 
