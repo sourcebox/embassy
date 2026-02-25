@@ -1,14 +1,20 @@
 //! Example showing both cores running thread-mode and interrupt executors
+//! This example needs to be run
+//! with:
+//!
+//! ```sh
+//! cargo run --release --no-default-features --features=custom-executor --bin multicore_multiprio
+//! ```
 //! Output will be logged via a USB serial port device
 //! Note this example will not work with the regular executors in embassy_executor
 #![no_std]
 #![no_main]
 
-use embassy_executor::Spawner;
+use embassy_executor::{Spawner, main};
 use embassy_rp::multicore::{CoreId, Stack, current_core, spawn_core1};
 use embassy_rp::{bind_interrupts, interrupt};
 use embassy_rp::interrupt::{InterruptExt, Priority};
-use embassy_rp::executor::{Executor, InterruptExecutor, main};
+use embassy_rp::executor::{Executor, InterruptExecutor};
 use embassy_rp::peripherals::USB;
 use embassy_time::{Duration, Ticker, Timer};
 use embassy_rp::usb;
@@ -36,7 +42,7 @@ bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => usb::InterruptHandler<USB>;
 });
 
-#[main(executor="Executor")]
+#[main(executor = "Executor", entry = "cortex_m_rt::entry")]
 async fn main(spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
 
